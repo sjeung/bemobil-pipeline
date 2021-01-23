@@ -30,17 +30,30 @@ weighted_sum_features = sum(all_normalized_features .* weights(:));
 sorted = sort(weighted_sum_features);
 
 if use_kneepoint
-	kneepoint = triangle_threshold(sorted, 'L', 0);
+	% abuse an image processing function i found on the interwebz to find the
+	% knee point here. works better than the knee_pt function imo.
+	% https://de.mathworks.com/matlabcentral/answers/483969-find-knee-elbow-of-a-curve
+	% author is Mark Hayworth!
+% 	kneepoint = triangle_threshold(sorted, 'L', 0);
+% 	rejection_index = kneepoint - round(length(sorted)/100*kneepoint_offset);
+% 	reject_epochs = weighted_sum_features > sorted(rejection_index);
+    
+	[n_remove, threshold] = bemobil_iterative_threshold_detection(weighted_sum_features);
+    kneepoint = length(weighted_sum_features)-n_remove;
 	rejection_index = kneepoint - round(length(sorted)/100*kneepoint_offset);
-	reject_epochs = weighted_sum_features > sorted(rejection_index);
+    
 elseif use_max_epochs
 	rejection_index = max_epochs;
-	reject_epochs = weighted_sum_features > sorted(rejection_index);
 else
 	rejection_index = round(length(weighted_sum_features)*(1-fixed_threshold));
-	reject_epochs = weighted_sum_features > sorted(rejection_index);
+	
+	% median based rejection
+% 	fixed_threshold = median(sorted)*2-sorted(1);
+% 	reject_epochs = weighted_sum_features > fixed_threshold;
+	
 end
 
+	reject_epochs = weighted_sum_features > sorted(rejection_index);
 	
 %% plot
 
