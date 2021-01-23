@@ -47,7 +47,7 @@ output_filepath_mobi = [bemobil_config.study_folder bemobil_config.mobilab_data_
 output_filepath = [bemobil_config.study_folder bemobil_config.raw_EEGLAB_data_folder bemobil_config.filename_prefix num2str(subject)];
 
 % get rid of memory mapped object storage
-try pop_editoptions( 'option_storedisk', 1, 'option_savetwofiles', 1, 'option_saveversion6', 0, 'option_single', 1, 'option_memmapdata', 0, 'option_eegobject', 0, 'option_computeica', 1, 'option_scaleicarms', 1, 'option_rememberfolder', 1, 'option_donotusetoolboxes', 0, 'option_checkversion', 1, 'option_chat', 1); catch warning('Could NOT edit EEGLAB memory options!!'); end
+try pop_editoptions( 'option_storedisk', 1, 'option_savetwofiles', 1, 'option_saveversion6', 0, 'option_single', 1, 'option_memmapdata', 0, 'option_eegobject', 0, 'option_computeica', 1, 'option_scaleicarms', 1, 'option_rememberfolder', 1, 'option_donotusetoolboxes', 0, 'option_checkversion', 1); catch warning('Could NOT edit EEGLAB memory options!!'); end
 
 % make sure EEGLAB has no files other than the ones to be merged
 % STUDY = []; CURRENTSTUDY = 0; ALLEEG = []; EEG=[]; CURRENTSET=[];
@@ -77,6 +77,7 @@ if ~force_recompute
 
 	end
 end
+
 %% run MoBILAB
 
 if ~exist('EEG_merged','var')
@@ -243,7 +244,7 @@ if ~exist('EEG_merged','var')
 	STUDY = []; CURRENTSTUDY = 0; ALLEEG = []; EEG=[]; CURRENTSET=[];
 	
 	% get rid of memory mapped object storage
-	try pop_editoptions( 'option_storedisk', 1, 'option_savetwofiles', 1, 'option_saveversion6', 0, 'option_single', 1, 'option_memmapdata', 0, 'option_eegobject', 0, 'option_computeica', 1, 'option_scaleicarms', 1, 'option_rememberfolder', 1, 'option_donotusetoolboxes', 0, 'option_checkversion', 1, 'option_chat', 1); catch warning('Could NOT edit EEGLAB memory options!!'); end
+	try pop_editoptions( 'option_storedisk', 1, 'option_savetwofiles', 1, 'option_saveversion6', 0, 'option_single', 1, 'option_memmapdata', 0, 'option_eegobject', 0, 'option_computeica', 1, 'option_scaleicarms', 1, 'option_rememberfolder', 1, 'option_donotusetoolboxes', 0, 'option_checkversion', 1); catch warning('Could NOT edit EEGLAB memory options!!'); end
 	
 	EEG = pop_loadset('filename', strcat(strcat(bemobil_config.filename_prefix, num2str(subject), '_',...
 		bemobil_config.filenames,'_EEG.set')), 'filepath', input_filepath);

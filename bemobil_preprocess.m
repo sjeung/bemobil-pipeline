@@ -119,6 +119,11 @@ end
 
 % 1d) change channel types in standard MoBI montage declaring the EOG and EEG channels
 for n = 1:length(EEG.chanlocs)
+    
+    n
+    EEG.chanlocs(n).type
+    ref_channel
+    
 	if ismember(EEG.chanlocs(n).labels, eog_channels)
 		EEG.chanlocs(n).type = strcat('EOG');
 		disp(['Added channel type: ', EEG.chanlocs(n).labels, ' is EOG electrode!!']);

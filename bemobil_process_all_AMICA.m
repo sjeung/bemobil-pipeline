@@ -57,7 +57,7 @@ end
 if ~exist('EEG_single_subject_final','var')
 	
 	%% highpass filter for AMICA
-	
+	  
 	output_filepath = [bemobil_config.study_folder bemobil_config.spatial_filters_folder...
 		bemobil_config.spatial_filters_folder_AMICA bemobil_config.filename_prefix num2str(subject)];
 	
@@ -77,10 +77,7 @@ if ~exist('EEG_single_subject_final','var')
 	if ~exist('EEG_filtered_for_AMICA','var')
 		
 		disp('Filtering the data for AMICA...')
-		
-		% delete events to save disk space and RAM 
-% 		EEG_interp_avRef.event = []; DONT DO THIS, IT'S THE DATA SET THAT GET'S COPIED LATER!
-		
+
 		% filters the data set separately for low and high cutoff frequencies, stores all relevant info in the set
 		[ALLEEG, EEG_filtered_for_AMICA, CURRENTSET] = bemobil_filter(ALLEEG, EEG_interp_avRef, CURRENTSET,...
 			bemobil_config.filter_lowCutoffFreqAMICA, bemobil_config.filter_highCutoffFreqAMICA,...
@@ -234,7 +231,7 @@ if ~exist('EEG_single_subject_final','var')
 		addpath(genpath('P:\Project_Friederike\2017_spot_rotation\1_analysis\analysis_Matlab_diaries_scripts_releases\3_release_internal_use_only'))
 		
 		disp('Determining continuous data cleaning boundaries...')
-		[auto_continuous_cleaning]=wrapper_automatic_cleaning_continuous_EEG(datapath_specifications,filename_specifications,...
+		[auto_continuous_cleaning] = wrapper_automatic_cleaning_continuous_EEG(datapath_specifications,filename_specifications,...
 			automatic_cleaning_settings);
 		
 		% copy cleaning results and save dataset
@@ -257,7 +254,6 @@ if ~exist('EEG_single_subject_final','var')
 	clear EEG_AMICA_raw
 	
 	%% ICA loop 2
-	
 	output_filepath = [bemobil_config.study_folder bemobil_config.spatial_filters_folder...
 		bemobil_config.spatial_filters_folder_AMICA bemobil_config.filename_prefix num2str(subject)];
 	
@@ -282,7 +278,29 @@ if ~exist('EEG_single_subject_final','var')
 		
 		% save RAM
 		clear EEG_AMICA_no_eyes
-		
+        
+        %%% remove line noise from original data (requires noiseTool)
+        %------------------------------------------------------------------
+        lineNoiseFreq = bemobil_config.linenoisefreq; 
+        
+        for fi = 1:numel(lineNoiseFreq)
+            
+            freq = lineNoiseFreq(fi);
+            
+            % parameters
+            FLINE = freq/EEG_filtered_for_AMICA.srate; % line frequency
+            NREMOVE = 3; % number of components to remove
+            
+            x = EEG_filtered_for_AMICA.data';
+            x = nt_demean(x);
+            
+            [denoised, noise] = nt_zapline(x,FLINE,NREMOVE);
+            
+            EEG_filtered_for_AMICA.data = denoised';
+            set(gcf, 'PaperPositionMode', 'auto');
+        end
+        %------------------------------------------------------------------
+        
 		% apply rejection on original dataset EEG_interp_avRef
 		EEG_cleaned_for_AMICA = eeg_eegrej(EEG_filtered_for_AMICA, invalid_segments_index);
 		
@@ -298,7 +316,6 @@ if ~exist('EEG_single_subject_final','var')
 		clear EEG_filtered_for_AMICA
 		
 		% running signal decomposition with values specified above
-		
 		disp('Final AMICA computation on cleaned data...');
 		[ALLEEG, EEG_AMICA_cleaned, CURRENTSET] = bemobil_signal_decomposition(ALLEEG, EEG_cleaned_for_AMICA, ...
 			CURRENTSET, true, bemobil_config.num_models, bemobil_config.max_threads, rank, [], ...
