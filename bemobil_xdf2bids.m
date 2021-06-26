@@ -153,7 +153,7 @@ addpath(fullfile(filepath, 'resources', 'natsortfiles'))
 addpath(fullfile(filepath, 'external', 'xdf'))
 
 % path to sourcedata
-sourceDataPath                          = fullfile(bemobil_config.study_folder, bemobil_config.raw_data_folder(1:end-1));
+sourceDataPath                          = fullfile(bemobil_config.study_folder, bemobil_config.raw_data_folder);
 addpath(genpath(sourceDataPath))
 
 % names of the steams 
