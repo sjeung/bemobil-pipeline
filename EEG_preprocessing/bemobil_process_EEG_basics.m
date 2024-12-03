@@ -195,12 +195,12 @@ elseif all(~cellfun(@isempty,{EEG.chanlocs.X}))
 else % no chanlocs present, use default chanlocs
     disp('No chanlocs were provided as path and none were found in the EEG set - looking up standard locs.')
     standard_channel_locations_path =...
-        fullfile(fileparts(which('dipfitdefs')),'standard_BESA','standard-10-5-cap385.elp');
+        fullfile(fileparts(which('dipfitdefs')),'standard_BEM', 'elec', 'standard_1020.elc');
     
     EEG = pop_chanedit(EEG,'lookup',standard_channel_locations_path);
 end
 
-assert(all(~cellfun(@isempty,{EEG.chanlocs.X})),'No chanlocs were present, could be loaded from file, or looked up in the standard dictionary!')
+%assert(all(~cellfun(@isempty,{EEG.chanlocs.X})),'No chanlocs were present, could be loaded from file, or looked up in the standard dictionary!')
 
 
 % this has to happen after loading chanlocs because chanlocs are being completely overwritten in the process

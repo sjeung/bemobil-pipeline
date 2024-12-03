@@ -355,9 +355,11 @@ for iSub = 1:numel(subDirList)
                 rmpath(genpath(fullfile(ftPath, [filesep 'external' filesep 'signal'])))
                 
                 % remove events with NaN latency before resampling
-                eventLatencies      = [EEG.event(:).latency];
-                nanInds             = find(isnan(eventLatencies));
-                EEG.event(nanInds)  = []; 
+                if ~isempty(EEG.event)
+                    eventLatencies      = [EEG.event(:).latency];
+                    nanInds             = find(isnan(eventLatencies));
+                    EEG.event(nanInds)  = [];
+                end
                 
                 EEG                 = pop_resample( EEG, newSRate); % use filter-based resampling
                 %                 [EEG]       = resampleToTime(EEG, newSRate, EEG.times(1), EEG.times(end), 0); % resample
@@ -444,14 +446,13 @@ for iSub = 1:numel(subDirList)
             % set srate to nominal srate
             if isfield(EEG.etc,'nominal_srate')
                 srate_ratios(iSes,1) = EEG.etc.nominal_srate/EEG.srate;
-                disp(['Setting EEG srate from effective srate of ' num2str(EEG.srate) ' to nominal srate of ' num2str(EEG.etc.nominal_srate) ' Hz'])
+                disp(['Setting EEG srate from effective srate of ' num2str(EEG.srate) ' to nominal srate of ' num2str(round(EEG.etc.nominal_srate)) ' Hz'])
                 assert(srate_ratios(iSes,1)>0.9 & srate_ratios(iSes,1)<1.1,'EEG effective and nominal srates are too different!')
-                EEG.srate = EEG.etc.nominal_srate;
+                EEG.srate = round(EEG.etc.nominal_srate);
             end
             
             % to prevent ft alt function from meddling with processing
             rmpath(genpath(fullfile(ftPath, [filesep 'external' filesep 'signal'])))
-                
             
             EEG                 = pop_resample( EEG, newSRate); % use filter-based resampling
             eegTimes            = EEG.times;

@@ -1,3 +1,5 @@
 *.asv
 *fdt
 AMICA/
+._.DS_Store
+.DS_Store

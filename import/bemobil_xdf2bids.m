@@ -78,7 +78,6 @@ function bemobil_xdf2bids(config, varargin)
 % 
 % 
 %
-%
 % Optional Inputs :
 %       Provide optional inputs as key value pairs.
 %       Usage:
@@ -422,6 +421,14 @@ end
 disp('Loading .xdf streams ...')
 streams                  = load_xdf(cfg.dataset,config.load_xdf_flags{:});
 
+if strcmp(cfg.sub, '82009')
+    streams{2}.info.name = 'playerTransform'; 
+end
+
+if contains(cfg.dataset, '82010_desktop_B_rec1.xdf')
+    streams{5}.info.name = 'PlayerTransform'; 
+end
+    
 % initialize an array of booleans indicating whether the streams are continuous
 ismarker = false(size(streams));
 emptystream = false(size(streams));
@@ -492,7 +499,7 @@ if importMotion
     for Si = 1:numel(config.motion.streams)
         motionStreamNames{Si}   = config.motion.streams{Si}.xdfname;
     end
-    
+
     xdfmotion   = streams(contains(lower(names),lower(motionStreamNames)) & ~ismarker & ~emptystream);
     
     for i_thisstream = 1:length(xdfmotion)
@@ -846,7 +853,6 @@ if importEEG % This loop is always executed in current version
     % acquisition time processing
     eegcfg.scans.acq_time = datenum(config.acquisition_time);
     eegcfg.scans.acq_time = datestr(eegcfg.scans.acq_time,'yyyy-mm-ddTHH:MM:SS.FFF'); % milisecond precision
-    
     
     % write eeg files in bids format
     data2bids(eegcfg, eeg);

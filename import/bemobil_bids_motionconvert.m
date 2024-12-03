@@ -35,8 +35,7 @@ for iM = 1:numel(motionIn)
     %                                                    'headRigid_rotZ', 'rightHand_rotZ'};
     %
     % If nothing is found using these methods, no stream is processed as
-    % quaternion
-    % Search by channel names is prioritized
+    % quaternion. Search by channel names is prioritized
     % 
     % If option streamsConfig{streamIndex}.quaternions.keep_quats = 1, 
     % the BIDS formatted data will contain quaternion channels not Euler
