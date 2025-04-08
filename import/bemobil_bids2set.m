@@ -568,11 +568,17 @@ for iSub = 1:numel(subDirList)
             else
                 trackingSystemsInSession = {''};
             end
-
+            
             for TSi = 1:numel(trackingSystemsInSession)
-
-                dataFiles = modalityFiles(contains(modalityFiles, trackingSystemsInSession{TSi}));
-
+                
+                dataFiles = {};
+                for fileInd = 1:numel(modalityFiles)
+                    splitname = strsplit(modalityFiles{fileInd},'_');
+                    if any(strcmp(splitname, trackingSystemsInSession{TSi}))
+                        dataFiles{end+1} = modalityFiles{fileInd};
+                    end
+                end
+                
                 if numel(eegFiles) ~= numel(dataFiles)
                     warning(['Number of EEG files and data files of type ' bemobilModality ' do not match within session ''' config.session_names{iSes} ''''])
                 end
